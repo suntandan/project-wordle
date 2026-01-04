@@ -9,9 +9,7 @@ function Input({ handleNewGuess }) {
       console.log("Guess must be 5 letters long");
       return;
     }
-    const convertedAnswer = guess.toUpperCase();
-    handleNewGuess(convertedAnswer);
-    console.log({ convertedAnswer });
+    handleNewGuess(guess);
     setGuess("");
   }
   return (
@@ -20,9 +18,13 @@ function Input({ handleNewGuess }) {
         <label htmlFor="guess-input">Enter guess:</label>
         <input
           id="guess-input"
+          minLength={5}
+          maxLength={5}
+          pattern="[a-zA-Z]{5}"
+          title="5 letter word"
           type="text"
           value={guess}
-          onChange={(e) => setGuess(e.target.value)}
+          onChange={(e) => setGuess(e.target.value.toUpperCase())}
         />
       </form>
     </>

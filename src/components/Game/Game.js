@@ -12,20 +12,22 @@ console.info({ answer });
 
 function Game() {
   const [guessResults, setGuessResults] = React.useState([]);
+  const [status, setStatus] = React.useState("running");
 
-  function handleNewGuess(newGuess) {
-    const guessObj = {
-      id: Math.random().toString(36).substr(2, 9),
-      label: newGuess,
-    };
-    const newGuessToBeComitted = [...guessResults, guessObj];
-    setGuessResults(newGuessToBeComitted);
+  function handleNewGuess(guess) {
+    console.log(`from handleNewGuess: ${guess}`);
+    setGuessResults([...guessResults, guess]);
+    console.log(guessResults);
   }
 
   return (
     <>
-      <GuessResults guessResults={guessResults} />
-      <Input handleNewGuess={handleNewGuess} />
+      {status === "running" && (
+        <>
+          <GuessResults guessResults={guessResults} answer={answer} />
+          <Input handleNewGuess={handleNewGuess} />
+        </>
+      )}
     </>
   );
 }
