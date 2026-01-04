@@ -2,8 +2,10 @@ import React from "react";
 
 import { sample } from "../../utils";
 import { WORDS } from "../../data";
-import Input from "../Input/Input";
+import GuessInput from "../GuessInput/GuessInput";
 import GuessResults from "../GuessResults/GuessResults";
+import Banner from "../Banner/Banner";
+import { NUM_OF_GUESSES_ALLOWED } from "../../constants";
 
 // Pick a random word on every pageload.
 const answer = sample(WORDS);
@@ -11,23 +13,33 @@ const answer = sample(WORDS);
 console.info({ answer });
 
 function Game() {
-  const [guessResults, setGuessResults] = React.useState([]);
-  const [status, setStatus] = React.useState("running");
+  const [guessList, setGuessList] = React.useState([]);
+  const [gameStatus, setGameStatus] = React.useState("running");
 
-  function handleNewGuess(guess) {
-    console.log(`from handleNewGuess: ${guess}`);
-    setGuessResults([...guessResults, guess]);
-    console.log(guessResults);
+  function handleSubmitGuess(inputGuess) {
+    const nextGuess = [...guessList, inputGuess];
+    //Conditions
+    if (inputGuess.toUpperCase() === answer) setGameStatus("won");
+    if (nextGuess.length >= NUM_OF_GUESSES_ALLOWED) setGameStatus("lost");
+
+    //Update guess array
+    setGuessList(nextGuess);
   }
 
   return (
     <>
-      {status === "running" && (
-        <>
-          <GuessResults guessResults={guessResults} answer={answer} />
-          <Input handleNewGuess={handleNewGuess} />
-        </>
+      {gameStatus !== "running" && (
+        <Banner
+          gameStatus={gameStatus}
+          answer={answer}
+          numOfGuesses={guessList.length}
+        />
       )}
+      <GuessResults guessList={guessList} answer={answer} />
+      <GuessInput
+        handleSubmitGuess={handleSubmitGuess}
+        gameStatus={gameStatus}
+      />
     </>
   );
 }
